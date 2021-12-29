@@ -86,8 +86,8 @@ buttons.addEventListener('click', function (event) {
     if(buttonInputCount == 1)
     {
       // 여기까지 진행 2021.12.29------------------------------------------------------------------------------####
+      console.log(test);
     }
-
   }
 });
 
