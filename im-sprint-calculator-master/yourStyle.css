@@ -1,5 +1,18 @@
 /* TODO : CSS파일을 편집하여 원하는 스타일의 계산기를 만들어보세요 :) */
+/*
+CSS 수도코드
 
+1. 버튼
+    - 수평 정렬
+    - 수직 정렬
+    - 버튼을 담은 컨테이너를 뒤의 박스 색과 일치시키기
+2. AC, Enter 버튼 크기 조절
+3. 색상 
+    - 파란색 →빨간색
+    - 테두리 추가 : 분홍색, 그림자 추가(진한 분홍색)
+4. 마우스 올렸을 때 액션
+5. 마우스 클릭 시 액션
+*/
 /* global */
 * {
   margin: 0;
@@ -26,11 +39,13 @@ body {
 }
 
 .calculator {
-  background-color: #4000c7;
+  background-color: #e91b36;
+  border : solid 5px rgb(110, 27, 27);
+  border-bottom : solid 15px rgb(58, 14, 14);
   width: 350px;
   height: 500px;
   border-radius: 10px;
-  padding: 30px 20px;
+  padding: 25px 15px;
 }
 
 .calculator__display--bare {
@@ -83,25 +98,34 @@ body {
 }
 
 .clear__and__enter {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
   height: 50px;
   margin: 10px;
-  background-color: #f3f0fc;
+  background-image: url("data/codestates-logo.png");
+  background-repeat: no-repeat;
+  background-position: 50% 50%;
 }
 
 .clear__and__enter > button {
   border-radius: 10px;
   width: 50px;
   height: 40px;
-  margin: 0px 5px;
+  margin: 0px 0px;
   background-color: #00da75;
   cursor: pointer;
   outline: none;
 }
-
+.calculate {
+  margin-left: 30px;
+}
 .button__row {
+  display: flex;
+  justify-content: space-between;/*수평을 맞춰주는 속성*/
+  align-items: center;
   height: 50px;
   margin: 10px;
-  background-color: #f3f0fc;
 }
 
 .button__row > button {
@@ -112,6 +136,13 @@ body {
   outline: none;
   background-color: #ebebeb;
 }
+.button__row > .number {
+  border: solid 3px darkgray;
+}
+
+.button__row > .decimal {
+  border: solid 3px darkgray;
+}
 
 .button__row > .operator {
   color: #ffffff;
@@ -119,7 +150,7 @@ body {
 }
 
 .button__row > .double {
-  width: 115px;
+  width: 123px;
 }
 
 .button__row > .isPressed {
@@ -132,3 +163,23 @@ body {
   bottom: 0px;
   right: 0px;
 }
+
+/* 버튼 이벤트 : hover , active */
+.clear:hover, .calculate:hover {
+  background-color: greenyellow;
+}
+
+.clear:active, .calculate:active{
+  color:greenyellow;
+}
+
+.number:hover,.operator:hover, .decimal:hover {
+  background-color: darkgray;
+}
+
+.number:active, .operator:active, .decimal:active
+{
+  color:darkgray;
+}
+
+/*-------------------------------*/
