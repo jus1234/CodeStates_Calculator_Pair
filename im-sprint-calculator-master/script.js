@@ -174,6 +174,10 @@ buttons.addEventListener('click', function (event) {
 
 const display = document.querySelector('.calculator__display--for-advanced'); // calculator__display 엘리먼트와, 그 자식 엘리먼트의 정보를 모두 담고 있습니다.
 let firstNum, operatorForAdvanced, previousKey, previousNum;
+firstNum='';
+let lastNum='';
+
+let isFirstNumber = true;// 첫번째 숫자가 입력되는 동안 true
 
 buttons.addEventListener('click', function (event) {
   // 버튼을 눌렀을 때 작동하는 함수입니다.
@@ -183,13 +187,62 @@ buttons.addEventListener('click', function (event) {
   const buttonContent = target.textContent; // 클릭된 HTML 엘리먼트의 텍스트 정보를 가져옵니다.
   // ! 위 코드는 수정하지 마세요.
 
+  // Advanced 수도 코드
+  // 1. 첫번째 숫자를 입력할 때
+  //  숫자를 연속적으로 클릭할 경우 화면에 숫자가 이어져서 출력된다.
+  // 2. 두번째 연산자를 입력할 때
+  //  연산자를 클릭하면 첫번째 숫자 입력이 멈추고 연산자가 메모리 상으로 기록(화면 표시 x)
+  // 3. 세번째 숫자를 입력할 때
+  //  숫자를 연속적으로 클릭할 경우 화면에 숫자가 이어져서 출력된다.
+  // 4. 네번째 연산
+  //  엔터를 클릭하면 연산된 결과가 화면에 출력
+  // 5. 다섯번째 클리어
+  //  AC버튼 클릭 시 기록된 메모리 제거
+
   // ! 여기서부터 Advanced Challenge & Nightmare 과제룰 풀어주세요.
   if (target.matches('button')) {
-    if (action === 'number') {}
-    if (action === 'operator') {}
-    if (action === 'decimal') {}
-    if (action === 'clear') {}
-    if (action === 'calculate') {}
+    if (action === 'number') {
+      if(isFirstNumber){
+        firstNum+=buttonContent;// 문자열로 추가
+        document.querySelector(".calculator__display--for-advanced").textContent = firstNum;
+      }else{
+        lastNum+=buttonContent;// 문자열로 추가
+        document.querySelector(".calculator__display--for-advanced").textContent = lastNum;
+      }
+    }
+    if (action === 'operator') {
+      if(isFirstNumber){// 첫번째로 클릭한 연산자만 기록
+        operatorForAdvanced = buttonContent;
+        isFirstNumber=false;
+      }
+    }
+    if (action === 'decimal') {
+      if(isFirstNumber){
+        firstNum+='.';// 문자열로 추가
+        document.querySelector(".calculator__display--for-advanced").textContent = firstNum;
+      }else{
+        lastNum+='.';// 문자열로 추가
+        document.querySelector(".calculator__display--for-advanced").textContent = lastNum;
+      }
+    }
+    if (action === 'clear') {
+      resetForAdvanced();
+      document.querySelector(".calculator__display--for-advanced").textContent = '0';
+    }
+    if (action === 'calculate') {
+      let n1 = Number(firstNum);
+      let n2 = Number(lastNum);
+      let resNumber = calculate(n1,operatorForAdvanced,n2);
+      document.querySelector(".calculator__display--for-advanced").textContent = resNumber;
+      resetForAdvanced();
+    }
   }
 
 });
+/* 어드벤스용 리셋 */
+function resetForAdvanced(){
+  firstNum='';
+  lastNum='';
+  operatorForAdvanced='';
+  isFirstNumber=true;
+}
