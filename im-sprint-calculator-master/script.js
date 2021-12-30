@@ -1,4 +1,4 @@
-/**
+ /**
  * 1. EventListener 로 눌렀을때, 누른 버튼을 콘솔로 보여주기
  * 2. 콘솔에서 표시해야할 데이터 ( 숫자라면 '숫자', 연산자면 '연산자 기호' );
  * 3. decimal
@@ -31,6 +31,12 @@ const calculatedResult = document.querySelector('.calculator__result'); // calcu
 // 초기화 함수
 function reset()
 {
+  document.querySelector('.calculator__operend--left').textContent = '0';
+  document.querySelector('.calculator__operator').textContent = '+';
+  document.querySelector('.calculator__operend--right').textContent = '0';
+  document.querySelector('.calculator__result').textContent = '0';
+  buttonInputCount = 0;
+
   console.log("Reset");
 }
 
@@ -38,6 +44,18 @@ function calculate(n1, operator, n2) {
   let result = 0;
   // TODO : n1과 n2를 operator에 따라 계산하는 함수를 만드세요.
   // ex) 입력값이 n1 : '1', operator : '+', n2 : '2' 인 경우, 3이 리턴됩니다.
+  console.log(`n1(${n1}),operator(${operator}),n2(${n2})`);
+  switch(operator){
+    case '+': result = n1+n2;break;
+
+    case '-': result = n1-n2;break;
+
+    case '*': result = n1*n2;break;
+
+    case '/': result = n1/n2;break;
+
+  }
+
   return String(result);
 }
 
@@ -81,13 +99,73 @@ buttons.addEventListener('click', function (event) {
     // TODO : 계산기가 작동할 수 있도록 아래 코드를 수정하세요. 작성되어 있는 조건문과 console.log를 활용하시면 쉽게 문제를 풀 수 있습니다.
     // 클릭된 HTML 엘리먼트가 button이면
     debug(target);
-    console.log(++buttonInputCount);
+    //console.log(++buttonInputCount);
+    
+    // 첫번째 버튼 (숫자)
+    if(buttonInputCount == 0)
+    {
+      if(action === 'number')
+      {
+        document.querySelector('.calculator__operend--left').textContent = buttonContent;
+        console.log(++buttonInputCount); // 첫번째 누른 버튼이 숫자라면, 카운트를 증가시킨다.
+      }
+    }
 
+    // 두번째 버튼 (연산자)
     if(buttonInputCount == 1)
     {
-      // 여기까지 진행 2021.12.29------------------------------------------------------------------------------####
-      console.log(test);
+      if(action === 'operator')
+      {
+        document.querySelector('.calculator__operator').textContent = buttonContent;
+        console.log(++buttonInputCount); // 두번째 누른 버튼이 연산자라면, 카운트를 증가시킨다.
+      }
     }
+
+    // 세번째 버튼 (숫자)
+    if(buttonInputCount == 2)
+    {
+      if(action === 'number')
+      {
+        document.querySelector('.calculator__operend--right').textContent = buttonContent;
+        console.log(++buttonInputCount); // 세번째 누른 버튼이 숫자라면, 카운트를 증가시킨다.
+      }
+    }
+
+    // 네번째 버튼 (계산)
+    if(buttonInputCount == 3)
+    {
+      if(action === 'calculate')
+      {
+        let num1 =Number(document.querySelector('.calculator__operend--left').textContent);
+        let oper = document.querySelector('.calculator__operator').textContent;
+        let num2 = Number(document.querySelector('.calculator__operend--right').textContent);
+
+        let res = calculate(num1,oper,num2); // 계산
+        console.log(res);
+        document.querySelector('.calculator__result').textContent = res;
+        console.log(++buttonInputCount); // 
+      }
+    }
+
+    // 다섯번째 버튼 (숫자)
+    if(buttonInputCount == 4)
+    {
+      // 초기화, 첫번째 숫자 를 입력한다.
+      if(action === 'number')
+      {
+        reset();
+        document.querySelector('.calculator__operend--left').textContent = buttonContent;
+        console.log(++buttonInputCount); // 세번째 누른 버튼이 숫자라면, 카운트를 증가시킨다.
+      }
+    }
+
+
+    // reset 버튼 (clear)
+    if(action === 'clear')
+    {
+      reset();
+    }
+
   }
 });
 
