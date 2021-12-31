@@ -44,6 +44,8 @@ function calculate(n1, operator, n2) {
   let result = 0;
   // TODO : n1과 n2를 operator에 따라 계산하는 함수를 만드세요.
   // ex) 입력값이 n1 : '1', operator : '+', n2 : '2' 인 경우, 3이 리턴됩니다.
+  n1 = Number(n1);
+  n2 = Number(n2);
   console.log(`n1(${n1}),operator(${operator}),n2(${n2})`);
   switch(operator){
     case '+': result = n1+n2;break;
@@ -55,7 +57,7 @@ function calculate(n1, operator, n2) {
     case '/': result = n1/n2;break;
 
   }
-
+  console.log(result);
   return String(result);
 }
 
@@ -173,11 +175,9 @@ buttons.addEventListener('click', function (event) {
 // ! Advanced Challenge test와 Nightmare test를 위해서는 아래 주석을 해제하세요.
 
 const display = document.querySelector('.calculator__display--for-advanced'); // calculator__display 엘리먼트와, 그 자식 엘리먼트의 정보를 모두 담고 있습니다.
-let firstNum, operatorForAdvanced, previousKey, previousNum;
+let firstNum, previousKey, previousNum;// firstNum은 현재 작성중인 숫자
 firstNum='';
-let lastNum='';
-
-let isFirstNumber = true;// 첫번째 숫자가 입력되는 동안 true
+let operatorForAdvanced=[];
 
 buttons.addEventListener('click', function (event) {
   // 버튼을 눌렀을 때 작동하는 함수입니다.
@@ -199,50 +199,93 @@ buttons.addEventListener('click', function (event) {
   // 5. 다섯번째 클리어
   //  AC버튼 클릭 시 기록된 메모리 제거
 
+  // Nightmare 수도 코드
+  // 1. 엔터 중첩 사용
+  //    연산된 결과가 previousNumber가 되고
+  //    operator 와 lastNumber로 연산   
+  // 2. 연산자 중첩 사용 
+  //    마지막에 입력된 연산자로 연산
+  // 3. 소숫점 중첩 사용
+  //    소숫점이 포함안된 경우에만 소숫점 추가
+  // 4. 숫자 연산자 엔터 순으로 입력 시
+  //    숫자가 firstNumber이자 lastNumber로 작동
+  // 5. 여러 항을 연산하는 경우
+  //    두 항 씩 계산
+  //    previousNumber 와 opertor와 lastNumber 로 연산 후, 화면에 출력
+  //    결과가 previousNumber가 되고 lastNumber는 비워 준다.
+
+  // 현재 상태는 첫항 과 마지막 항을 마지막 연산자로 연산
+  // 숫자영역 연산자영역 숫자영역 연산이 발생하고 값 저장 연산자영역
+  // first -> previous 연산자 스택 쌓이고 first => previous로 만들어 주기
+
+
   // ! 여기서부터 Advanced Challenge & Nightmare 과제룰 풀어주세요.
   if (target.matches('button')) {
     if (action === 'number') {
-      if(isFirstNumber){
-        firstNum+=buttonContent;// 문자열로 추가
-        document.querySelector(".calculator__display--for-advanced").textContent = firstNum;
-      }else{
-        lastNum+=buttonContent;// 문자열로 추가
-        document.querySelector(".calculator__display--for-advanced").textContent = lastNum;
-      }
+      firstNum+=buttonContent;// 문자열로 추가
+      document.querySelector(".calculator__display--for-advanced").textContent = firstNum;
     }
     if (action === 'operator') {
-      if(isFirstNumber){// 첫번째로 클릭한 연산자만 기록
-        operatorForAdvanced = buttonContent;
-        isFirstNumber=false;
+      if(previousKey==='number'){
+        if(previousNum===undefined){
+          previousNum = firstNum;
+        }else{
+          let n1 = Number(firstNum);
+          previousNum = calculate(Number(previousNum),operatorForAdvanced[operatorForAdvanced.length-1],n1);
+          peratorForAdvanced=[];
+        }
       }
+      operatorForAdvanced.push(buttonContent);
+      
+      firstNum='';
+      document.querySelector(".calculator__display--for-advanced").textContent = previousNum;
     }
     if (action === 'decimal') {
-      if(isFirstNumber){
-        firstNum+='.';// 문자열로 추가
-        document.querySelector(".calculator__display--for-advanced").textContent = firstNum;
-      }else{
-        lastNum+='.';// 문자열로 추가
-        document.querySelector(".calculator__display--for-advanced").textContent = lastNum;
+      //decimal 중복 체크
+      if(firstNum.includes('.')){
+        return
       }
+      if(firstNum===''){
+        firstNum+='0';
+      }
+      firstNum+='.';// decimal을 문자열로 추가
+      document.querySelector(".calculator__display--for-advanced").textContent = firstNum;
     }
     if (action === 'clear') {
       resetForAdvanced();
       document.querySelector(".calculator__display--for-advanced").textContent = '0';
     }
     if (action === 'calculate') {
-      let n1 = Number(firstNum);
-      let n2 = Number(lastNum);
-      let resNumber = calculate(n1,operatorForAdvanced,n2);
+      let n1;
+      if(previousNum===undefined){
+        n1 = firstNum;
+      }else{
+        n1 = previousNum;
+      }
+      let n2;
+      if(firstNum===''){// 두번째 숫자 미입력시 연산시키면 첫번째 숫자를 두번째 숫자로 사용
+        n2 = n1;
+      }else{
+        n2 = Number(firstNum);
+      }
+      let resNumber;
+      if(operatorForAdvanced.length===0){
+        resNumber = n1;
+      }else if(previousKey==='calculate'){
+        resNumber=calculate(Number(previousNum),operatorForAdvanced[operatorForAdvanced.length-1],n2)
+      }else{
+        resNumber=calculate(n1,operatorForAdvanced[operatorForAdvanced.length-1],n2);
+      }
       document.querySelector(".calculator__display--for-advanced").textContent = resNumber;
-      resetForAdvanced();
+      previousNum = resNumber;
     }
+    previousKey = action;
   }
 
 });
 /* 어드벤스용 리셋 */
 function resetForAdvanced(){
   firstNum='';
-  lastNum='';
-  operatorForAdvanced='';
-  isFirstNumber=true;
+  previousNum=undefined;
+  operatorForAdvanced=[];
 }
