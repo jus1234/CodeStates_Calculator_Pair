@@ -256,8 +256,12 @@ buttons.addEventListener('click', function (event) {
       document.querySelector(".calculator__display--for-advanced").textContent = '0';
     }
     if (action === 'calculate') {
+      if(previousKey===undefined){
+        document.querySelector(".calculator__display--for-advanced").textContent = '0';
+        return
+      }
       let n1;
-      if(previousNum===undefined){
+      if(previousNum===null){
         n1 = firstNum;
       }else{
         n1 = previousNum;
@@ -288,4 +292,5 @@ function resetForAdvanced(){
   firstNum='';
   previousNum=undefined;
   operatorForAdvanced=[];
+  previousKey=undefined;
 }
